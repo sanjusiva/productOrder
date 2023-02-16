@@ -1,0 +1,68 @@
+
+<p-toolbar *ngIf="addnew">
+    <ng-template pTemplate="left">
+        <button pButton pRipple lable="Add New" icon="pi pi-plus" class="p-button-success p-mr-2"
+            (click)="addNew()"></button> &nbsp; Add new {{input.title|titlecase}}
+    </ng-template>
+</p-toolbar>
+<p-table #dt [value]="input.tables" dataKey="id" [columns]="input.cols" [globalFilterFields]="input.cols">
+    <ng-template pTemplate="caption">
+        <div class="table-header">
+            {{input.title|titlecase}} list
+             <div class="text-lg-end" *ngIf="page">
+                 <input type="text" [(ngModel)]="limit" (blur)="changeBlur(limit)" placeholder="Data limit in a page">
+             </div>
+             <div class="text-lg" *ngIf="input.title=='product'">
+                 <input type="text" [(ngModel)]="filterVal" (blur)="filterColumn(filterVal)" placeholder="fieldname=value">
+             </div>
+         </div>
+        <div class="flex">
+            <span class="p-input-icon-left ml-auto">
+                <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')" placeholder="Search keyword" />
+            </span>
+        </div>
+    </ng-template> 
+    <ng-template pTemplate="header" let-column>
+        <tr>
+            <th *ngFor="let col of column">
+               {{col}}
+                <p-columnFilter  *ngIf="((col.includes('id')||col.includes('Id')||col.includes('price')) &&( !(col.includes('customerId'))));else elseBlock " type="numeric" field={{col}} display="menu"></p-columnFilter>
+                <ng-template #elseBlock>
+                    <p-columnFilter  type="text" field={{col}} display="menu"></p-columnFilter>
+                </ng-template>
+            </th>
+            <th>Actions</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-table let-column="columns">
+        <tr>
+            <td *ngFor="let col of column">{{table[col]}}</td>
+            <td>
+                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success p-mr-2" (click)="editProduct(table,table.id)"></button>&nbsp;
+            </td>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+		<tr>
+			<td colspan="7">No match found.</td>
+		</tr>
+	</ng-template>
+</p-table>
+
+<p-paginator *ngIf="page" [rows]="10" [totalRecords]="totalRecords" (onPageChange)="paginate($event)"></p-paginator>
+
+<p-dialog [(visible)]="tableDialog" *ngIf="formly" [style]="{width:'750px'}" header="{{input.title|titlecase}} Details" styleClass="p-fluid" >
+   <app-formly [tableEdit]="tableEdit" [formlyPatch]="formlyPatch" (FormSubmit)="formSubmit($event)"></app-formly>
+</p-dialog>
+<p-dialog [(visible)]="tableDialog" *ngIf="!formly" [style]="{width:'750px'}" header="{{input.title|titlecase}} Details" styleClass="p-fluid">
+    <ng-template pTemplate="content" >
+        <div class="p-field" *ngFor="let col of editCols">
+            <label for="{{col}}">{{col}}</label>
+            <input type="text" pInputText id="{{col}}" [(ngModel)]="tableEdit[col]">
+        </div>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveField(tableEdit.id)"></button>
+    </ng-template>
+</p-dialog>

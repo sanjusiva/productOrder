@@ -1,0 +1,10 @@
+
+<!-- <app-table [tables]="tables" [title]="title" [cols]="cols" [editCols]="editCols" [addnew]="addnew" [rows]="rows" 
+[totalRecords]="totalRecords" [havePaginator]="havePaginator" (EmitFieldFilterValue)="fieldFilterValue($event)"
+(EditResponse)="editResponse($event)" (EmitPageNumber)="emitPageNumber($event)" (EmitPageLimit)="emitPageLimit($event)" (EmitNewProduct)="addNewProduct($event)">
+</app-table> -->
+
+
+<app-table [input]="input" [editCols]="editCols" [addnew]="addnew" [page]="page" [totalRecords]="totalRecords" (EmitFieldFilterValue)="fieldFilterValue($event)"
+(EditResponse)="editResponse($event)" (EmitPageNumber)="emitPageNumber($event)" (EmitPageLimit)="emitPageLimit($event)" (EmitNewProduct)="addNewProduct($event)">
+</app-table>
